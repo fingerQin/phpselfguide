@@ -105,7 +105,13 @@
 	* [15.1 配置](0x15-svn/config.md)
 * [第 16 章：GitBook](0x16-gitbook/README.md)
 	* [16.1 安装](0x16-gitbook/install.md)
-
-
+* [第 17 章：PHP 与正则](0x17-regular/README.md)
+	* [17.1 正则基础](0x17-regular/basics.md)
+* [第 18 章：算法](0x18-arithmetic/README.md)
+  * [18.1 选择排序](0x18-arithmetic/select-sort.md)
+  * [18.2 冒泡排序](0x18-arithmetic/bubble-sort.md)
+* [第 19 章：设计模式](0x19-design-pattern/README.md)
+  * [19.1 单例模式](0x19-design-pattern/signle.md)
+  * [19.2 工厂模式](0x19-design-pattern/factory.md)
 
 
