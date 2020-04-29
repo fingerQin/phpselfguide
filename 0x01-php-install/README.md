@@ -24,6 +24,20 @@ Web 服务器通常并非仅仅只安装 PHP。也有可能会安装 MySQL、Ngi
 ### 2）PHP 依赖库安装
 PHP 很多的内置扩展或开发中常用的扩展会依赖 Linux 系统底层库的支持。所以，要想使用这些功能，需要提前安装这些库。
 
+
+
+> 注意事项：
+>
+> 由于底层这些库是 `C/C++` 开发。所以，编译安装的时候也需要安装 `C/C++` 编译器。
+>
+> CentOS 系统安装示例：
+>
+> $ yum install -y gcc gcc-c++ autoconf
+>
+> 这条命令我们安装了 gcc gcc-c++ autoconf 三个编译库。不安装否则会报错。
+
+
+
 #### 2.1) 安装 libiconv 库
 
 为什么要安装这个库呢？是因为 php 里面的 `iconv` 打头的函数依赖这个库实现它的功能。更直白一点说：所有这些 `iconv` 打头的函数直接包装了 `Linux` 系统底层的 `libiconv` 库实现其功能。
@@ -117,29 +131,28 @@ $ make install
 
 
 
-#### 2.5）安装 libevent 库
+#### 2.5）安装 libjpeg 库
 
-这个库是一个非常知名且强大的事件库。`PHP` 里面所有以 `event_` 开头的函数都是调用它提供的功能实现。所以，如果会用到这个库的话，最好安装它。
+`GD` 库依赖这个库来处理 `jpeg` 格式图片。所以，我们一定要安装它。
 
-官网：http://libevent.org/
+官网：http://www.ijg.org/
 
 下载&&安装：
 
 ```
-$ wget https://github.com/libevent/libevent/releases/download/release-2.1.11-stable/libevent-2.1.11-stable.tar.gz
-$ tar zxvf libevent-2.1.11-stable.tar.gz
-$ cd libevent-2.1.11-stable
-$ ./configure --prefix=/usr/local/libevent-2.1.11
-$ make && make install
+$ wget http://www.ijg.org/files/jpegsrc.v9d.tar.gz
+$ tar zxvf jpegsrc.v9d.tar.gz
+$ cd jpegsrc.v9d
+$ ./configure --prefix=/usr/local/jpegsrc.9d
+$ make CFLAGS=-fpic
+$ make install
 ```
 
-> 当然，这个是 Linux 底层的事件库。但是，要在 PHP 里面使用的话，还需要安装 PHP C 扩展：libevent 或 event。
 
 
+#### 2.6）安装 curl 库
 
-#### 2.6）安装 libcurl 库
-
-我们在开发过程中，经常会使用 `curl` 来调用其他平台提供的接口。所以，我们也需要安装 `libcurl` 库。通常这个库已经在 `linux` 系统之中已经安装了。
+我们在开发过程中，经常会使用 `curl` 来调用其他平台提供的接口。所以，我们也需要安装 `curl` 库。通常这个库已经在 `linux` 系统之中已经安装了。
 
 如果没有安装怎么办?
 
@@ -157,7 +170,7 @@ $ yum install libcurl-devel -y
 $ wget https://curl.haxx.se/download/curl-7.69.1.tar.gz
 $ tar zxvf curl-7.69.1.tar.gz
 $ cd curl-7.69.1
-$ ./configure --prefix=/usr/local/curl
+$ ./configure --prefix=/usr/local/curl7.69.1
 $ make && make install
 ```
 
@@ -216,20 +229,25 @@ $ yum install -y gcc gcc-c++ autoconf libxml2 libxml2-devel libjpeg libjpeg-deve
 --enable-bcmath \
 --enable-soap \
 --with-zlib \
+--enable-phpdbg \
 --with-iconv=/usr/local \
 --with-gd \
 --enable-libxml \
 --enable-mbstring \
 --with-curl \
 --enable-ftp \
---with-freetype-dir=/usr/local/freetype.2.1.10 \
---with-jpeg-dir=/usr/local/jpeg.9 \
---with-png-dir=/usr/local/libpng.1.6.36 \
+--with-freetype-dir=/usr/local/freetype.2.10.0 \
+--with-jpeg-dir=/usr/local/jpeg.9d \
+--with-png-dir=/usr/local/libpng.1.6.37 \
 --disable-ipv6 \
 --disable-debug \
 --with-openssl \
 --disable-maintainer-zts
 ```
+
+
+
+> 注：关于这 ./configure 提供的一系列配置参数。可以通过在源码目录下执行 ./configure --help 来查看详情。
 
 
 
@@ -291,7 +309,7 @@ $ yum install -y gcc gcc-c++ autoconf libxml2 libxml2-devel libjpeg libjpeg-deve
 
 #### 3.6）--enable-static
 
-编译安装的时候生成静态库。与之相对应的是动态库。静态库的优势就是加载的时候慢点，但是后续执行的时候就不需要再加载。稍微消耗内存一点。在服务器内存日益强大的今天，这点开销可以忽略不计。**用空间换时间**。
+编译安装的时候生成静态库。与之相对应的是动态库。静态库的优势就是加载的时候慢点，但是后续执行的时候就不需要再加载。稍微消耗内存一点。在服务器内存日益强大的今天，这点开销可以忽略不计。**用空间换时间**。默认是开启状态。
 
 ```
 # 开启
@@ -319,7 +337,7 @@ $ yum install -y gcc gcc-c++ autoconf libxml2 libxml2-devel libjpeg libjpeg-deve
 
 #### 3.8）--enable-inline-optimization
 
-编译优化。
+编译优化。因为 `PHP` 采用 `C` 语言编写，而 `C` 语言里面有这个编译 `inline` 的概念。可以肤浅地理解为 `PHP` 内核内的代码调用时候以内联方式进行。此配置会增加安装包的尺寸，但是能 `PHP` 在运行的时候性能会小幅提升。
 
 ```
 --enable-inline-optimization
@@ -382,8 +400,6 @@ $ yum install -y gcc gcc-c++ autoconf libxml2 libxml2-devel libjpeg libjpeg-deve
 ```
 # 默认去 /usr/local 目录查找类库
 --with-gettext
-# 指定目录。这个目录是自己编译安装的目录。0.20.0
---with-gettext=/usr/local/gettext0.20.0
 ```
 
 `CentOS` 安装 `gettext` 也挺简单的：
@@ -456,7 +472,7 @@ $ yum isntall -y gettext
 # 默认
 --with-zlib
 # 指定目录。假如我们编译安装的 zlib 目录为：/usr/local/zlib1.2.11
---with-zlib=/usr/local/zlib1.2.11
+--with-zlib-dir=/usr/local/zlib1.2.11
 ```
 
 
@@ -486,7 +502,143 @@ $ yum isntall -y gettext
 
 #### 3.20）--enable-libxml
 
+开启 `libxml` 扩展支持。这个扩展就很厉害了。如下扩展依赖它：`DOM、libxml、SimpleXML、SOAP、WDDX、XSL、XML、XMLReader、XMLPRC、XMLWriter`。
 
+而 XML 的操作在很多应用系统之中使用是相当之广泛的。所以，必须激活它。
+
+```
+# 开启
+--enable-libxml
+# 关闭
+--disable-libxml
+```
+
+
+
+#### 3.21）--with-openssl
+
+开启 `OpenSSL` 扩展支持。这个扩展经常用来加密解密。详情可以查看以 `openssl_` 开头的函数族。`PHP 5` 要求 `OpenSSL >= 0.9.6`。 然而 `PHP5` 后续版本会有些编译上的问题，所以最好是使用 `OpenSSL >= 0.9.8`(`PHP7` 要求的最低版本) 。 其他版本(`PHP >= 7.1.0`) 要求 `OpenSSL >= 1.0.1`。
+
+不管怎么说，要开启 `OpenSSL` 库，您的系统必须安装最新版本的 `OpenSSL` 库准没错。
+
+```
+--with-openssl
+```
+
+
+
+#### 3.22）--enable-mbstring
+
+开启 `mbstring` 扩展。该扩展作用于 `mb_` 开头的函数族。用于处理多字节字符。该扩展非常有用。必须开启。
+
+```
+--enable-mbstring
+```
+
+
+
+#### 3.23）--disable-debug
+
+关闭 `PHP` 调试模式。正式环境关闭调试模式能提升 `PHP` 性能。
+
+```
+--disable-debug
+```
+
+
+
+#### 3.24）--disable-ipv6
+
+关闭 `ipv6` 支持。如果需要支持 `ipv6` 的环境。
+
+```
+--disable-ipv6
+```
+
+
+
+#### 3.25）--with-curl
+
+开启 `curl` 支持。
+
+ ```
+--with-curl
+ ```
+
+请确保系统已经安装了 `curl` 类库。
+
+
+
+#### 3.26）--with-freetype-dir
+
+上面安装 `freetype` 类库的时候我们对 `freetype` 进行过讲解。它是一个字体类库。通常用于 `GD` 库图形二维码、水印等场景。所以，我们手动指定类库目录给它。
+
+```
+--with-freetype-dir=/usr/local/freetype.2.1.10
+```
+
+
+
+#### 3.27）--with-png-dir
+
+设置需要的 `libpng` 目录。因为咱们的 `GD` 库能用得上。
+
+```
+--with-png-dir=/usr/local/libpng.1.6.37
+```
+
+
+
+#### 3.28）--with-jpeg-dir
+
+设置 `libjpeg` 库目录。`GD` 库在处理 `jpeg` 格式图片时会用得上。
+
+```
+--with-jpeg-dir=/usr/local/jpeg.9
+```
+
+
+
+#### 3.29）--disable-maintainer-zts
+
+因为我们采用的是 `FastCGI` 模式运行。并不会涉及线程相关的操作。所以，关闭线程优化，可以明显提供性能。如果您想在 PHP 中使用多线程 `phpthreads` 相关的包或应用。请激活它。
+
+```
+# 禁用
+--disable-maintainer-zts
+# 激活
+--enable-maintainer-zts
+```
+
+
+
+#### 3.30）--disable-rpath
+
+禁用在搜索路径中传递其他运行库。实则就是提升性能所用。
+
+
+
+#### 3.31）--enable-phpdbg
+
+激活 `PHP ` 周围的 `phpdbg` 调试利器。正式环境建议关闭。`PHPDBG` 是一个 `PHP` 的 `SAPI` 模块，可以在不用修改代码和不影响性能的情况下控制 `PHP` 的运行环境。`PHPDBG` 的目标是成为一个轻量级、强大、易用的 `PHP` 调试平台。可以在 `PHP5.4` 和之上版本中使用。在 `php5.6` 和之上版本将内部集成。
+
+```
+--enable-phpdbg
+```
+
+
+
+#### 3.32）--enable-opcache
+
+开启 `opcache` 支持。`opcache` 通过将 `PHP` 脚本预编译的字节码存储到共享内存中来提升 `PHP` 的性能，存储预编译字节码的好处就是省去了每次加载和解析 `PHP` 脚本的开销。
+
+`PHP 5.5.0` 及后续版本中已经绑定了 `pocache` 扩展。 对于 `PHP 5.2`，`5.3` 和 `5.4` 版本可以使用 [» PECL](https://pecl.php.net/package/ZendOpcache) 扩展中的 `opcache` 库。
+
+> 如果需要将 [» Xdebug](http://xdebug.org/) 扩展和 `opcache` 一起使用，必须在 `Xdebug` 扩展之前加载 `opcache` 扩展。
+
+```
+--enable-opcache
+```
 
 
 
