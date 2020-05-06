@@ -144,6 +144,21 @@ error_log = /data/log/php/php72/php_errors.log
 
 
 
+#### 3.6）设置扩展目录
+
+`PHP` 除了内置的扩展之外，我们还可以根据项目的实际需求安装第三方的扩展。而这些扩展编译之后都会生成 `so` 文件在特定的目录。而这个目录与 `PHP` 的版本密切相关。
+
+比如，常见的第三方扩展有：`redis`、`memcache`、`yaf` 等。
+
+```ini
+extension_dir = "/data/server/php/php72/lib/php/extensions/no-debug-non-zts-20170718/"
+```
+
+一定要去掉这一行配置前面的注释信息。
+
+
+
+
 ### 4）php-fpm.conf 配置
 
 `php-fpm.ini` 配置文件是我们在编译时指定 `--enable-fpm` 参数。则会把 `php-fpm.conf.default` 生成到 `/data/server/php/php72/etc` 配置目录下。
