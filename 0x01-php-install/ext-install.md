@@ -562,7 +562,11 @@ https://www.php.net/manual/zh/install.pecl.php-config.php
 
 
 
-3.2）将 `PECL` 扩展库静态编译入 `PHP`
+#### 3.2）将 `PECL` 扩展库静态编译入 `PHP`
+
+我们的扩展安装之后都会生成一个 `so` 的文件到 `PHP` 相关的目录之中。如果您想直接编译到 `PHP` 中，不以 `so` 方式加载。那么，这一块的知识拓展将非常适合你。
+
+https://www.php.net/manual/zh/install.pecl.static.php
 
 
 

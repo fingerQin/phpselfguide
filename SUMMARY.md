@@ -1,4 +1,4 @@
-# Summary
+# 目录
 
 * [介绍](README.md)
 * [第 1 章：PHP 安装](0x01-php-install/README.md)
@@ -12,10 +12,12 @@
 	* [1.8 PHP 安装错误大全](0x01-php-install/error.md)
 * [第 2 章：PHP 各版本特性](0x02-php-version/README.md)
 	* [2.1 PHP 5.3 版本特性](0x02-php-version/php53.md)
-	* [2.2 PHP 5.6 版本特性](0x02-php-version/php56.md)
-	* [2.3 PHP 7.2 版本特性](0x02-php-version/php72.md)
-	* [2.4 PHP 7.3 版本特性](0x02-php-version/php73.md)
-	* [2.5 PHP 7.4 版本特性](0x02-php-version/php74.md)
+	* [2.2 PHP 5.4 版本特性](0x02-php-version/php54.md)
+	* [2.3 PHP 5.5 版本特性](0x02-php-version/php55.md)
+	* [2.4 PHP 5.6 版本特性](0x02-php-version/php56.md)
+	* [2.5 PHP 7.2 版本特性](0x02-php-version/php72.md)
+	* [2.6 PHP 7.3 版本特性](0x02-php-version/php73.md)
+	* [2.7 PHP 7.4 版本特性](0x02-php-version/php74.md)
 * [第 3 章：PHP 配置](0x03-php-config/README.md)
 	* [3.1 基础配置](0x03-php-config/base.md)
 	* [3.2 Session 配置](0x03-php-config/session.md)
