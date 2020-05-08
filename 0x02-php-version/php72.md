@@ -420,7 +420,7 @@ Uncaught Error: Too few arguments to function test(), 0 passed in...
 
 ### 19）void 函数
 
-一个新的返回值类型 `void` 被引入。 返回值声明为 `void` 类型的方法要么干脆省去`return` 语句，要么使用一个空的 `return` 语句。 对于 `void` 函数来说，`NULL` 不是一个合法的返回值。
+`PHP 7.1` 一个新的返回值类型 `void` 被引入。 返回值声明为 `void` 类型的方法要么干脆省去`return` 语句，要么使用一个空的 `return` 语句。 对于 `void` 函数来说，`NULL` 不是一个合法的返回值。
 
 ```php
 <?php
@@ -454,7 +454,7 @@ int(1)
 
 ### 20）`Symmetric array destructuring`
 
-短数组语法（*[]*）现在作为[list()](https://www.php.net/manual/zh/function.list.php)语法的一个备选项，可以用于将数组的值赋给一些变量（包括在 `foreach` 中）。
+`PHP 7.1` 短数组语法（*[]*）现在作为[list()](https://www.php.net/manual/zh/function.list.php)语法的一个备选项，可以用于将数组的值赋给一些变量（包括在 `foreach` 中）。
 
 ```php
 <?php
@@ -484,7 +484,7 @@ foreach ($data as [$id, $name]) {
 
 ### 21）类常量可见性
 
-现在起支持设置类常量的可见性。
+`PHP 7.1` 现在起支持设置类常量的可见性。
 
 ```php
 <?php
@@ -501,7 +501,7 @@ class ConstDemo
 
 ### 22）list()现在支持键名
 
-现在[list()](https://www.php.net/manual/zh/function.list.php)和它的新的*[]*语法支持在它内部去指定键名。这意味着它可以将任意类型的数组 都赋值给一些变量（与短数组语法类似）。
+`PHP 7.1` 现在[list()](https://www.php.net/manual/zh/function.list.php)和它的新的*[]*语法支持在它内部去指定键名。这意味着它可以将任意类型的数组 都赋值给一些变量（与短数组语法类似）。
 
 ```php
 <?php
@@ -526,6 +526,209 @@ foreach ($data as ["id" => $id, "name" => $name]) {
     // logic here with $id and $name
 }
 ```
+
+
+
+### 23）异步信号处理
+
+`PHP 7.1` 一个新的名为 [pcntl_async_signals()](https://www.php.net/manual/zh/function.pcntl-async-signals.php) 的方法现在被引入， 用于启用无需 ticks （这会带来很多额外的开销）的异步信号处理。
+
+```php
+<?php
+pcntl_async_signals(true); // turn on async signals
+
+pcntl_signal(SIGHUP,  function($sig) {
+    echo "SIGHUP\n";
+});
+
+posix_kill(posix_getpid(), SIGHUP);
+```
+
+以上程序输出：
+
+```
+SIGHUP
+```
+
+
+
+### 24）`PHP 7.1` 新的方法
+
+```
+curl_multi_errno() - 返回上一次 curl 批处理的错误码。
+curl_share_errno() - 返回共享 curl 句柄的最后一次错误号。
+curl_share_strerror() - 返回错误号对应的错误消息。
+session_create_id() - 创建一个新的 SESSION ID。
+session_gc() - 执行 SESSION 会话垃圾回收器。
+pcntl_async_signals() - 触发异步信号。
+pcntl_signal_get_handler() - 给指定信息设置一个回调处理器。
+```
+
+> 更多文档：https://www.php.net/manual/zh/migration71.new-functions.php
+
+
+
+### 25）`mcrypt` 扩展从 `PHP` 核心中移除
+
+`PHP 7.1` : `mcrypt` 扩展已经过时了大约 10 年，并且用起来很复杂。因此它被废弃并且被 `OpenSSL` 所取代。 从 `PHP 7.2` 起它将被从核心代码中移除并且移到 `PECL` 中。
+
+
+
+### 26）新的对象类型
+
+`PHP 7.2` 这种新的对象类型, [object](https://www.php.net/manual/zh/language.types.object.php), 引进了可用于逆变（`contravariant`）参数输入和协变（`covariant`）返回任何对象类型。
+
+```php
+<?php
+
+function test(object $obj) : object
+{
+    return new SplQueue();
+}
+
+test(new StdClass());
+```
+
+
+
+### 27）通过名称加载扩展
+
+`PHP 7.2` 扩展文件不再需要通过文件加载 (`Unix` 下以 `.so` 为文件扩展名，在 `Windows` 下以 `.dll` 为文件扩展名) 进行指定。可以在 `php.ini` 配置文件进行启用, 也可以使用 [dl()](https://www.php.net/manual/zh/function.dl.php) 函数进行启用。
+
+
+
+### 28）允许重写抽象方法(`Abstract method`)
+
+当一个抽象类继承于另外一个抽象类的时候，继承后的抽象类可以重写被继承的抽象类的抽象方法。
+
+```php
+<?php
+
+abstract class A
+{
+    abstract function test(string $s);
+}
+abstract class B extends A
+{
+    // overridden - still maintaining contravariance for parameters and covariance for return
+    abstract function test($s) : int;
+}
+```
+
+
+
+### 29）使用 `Argon2` 算法生成密码散列
+
+`PHP 7.2` `Argon2` 已经被加入到密码散列（`password hashing`） `API` (这些函数以 `password_` 开头), 以下是暴露出来的常量:
+
+- **`PASSWORD_ARGON2I`**
+- **`PASSWORD_ARGON2_DEFAULT_MEMORY_COST`**
+- **`PASSWORD_ARGON2_DEFAULT_TIME_COST`**
+- **`PASSWORD_ARGON2_DEFAULT_THREADS`**
+
+
+
+### 30）新增 `ext/PDO`（`PDO` 扩展） 字符串扩展类型
+
+`PHP 7.2` 当你准备支持多语言字符集，`PDO` 的字符串类型已经扩展支持国际化的字符集。以下是扩展的常量：
+
+- **`PDO::PARAM_STR_NATL`**
+- **`PDO::PARAM_STR_CHAR`**
+- **`PDO::ATTR_DEFAULT_STR_PARAM`**
+
+这些常量通过**`PDO::PARAM_STR`**利用位运算 `OR` 进行计算：
+
+```php
+<?php
+
+$db->quote('über', PDO::PARAM_STR | PDO::PARAM_STR_NATL);
+```
+
+
+
+### 31）为 `ext/PDO` 新增额外的模拟调试信息
+
+`PHP 7.2` [PDOStatement::debugDumpParams()](https://www.php.net/manual/zh/pdostatement.debugdumpparams.php) 方法已经更新，当发送 `SQL` 到数据库的时候，在一致性、行查询（包括替换绑定占位符）将会显示调试信息。这一特性已经加入到模拟调试中（在模拟调试打开时可用）。
+
+
+
+### 32）ext/sockets（sockets扩展）添加了地址信息
+
+`PHP 7.2` `sockets` 扩展现在具有查找地址信息的能力，且可以连接到这个地址，或者进行绑定和解析。为此添加了以下一些函数:
+
+- [socket_addrinfo_lookup()](https://www.php.net/manual/zh/function.socket-addrinfo-lookup.php)
+- [socket_addrinfo_connect()](https://www.php.net/manual/zh/function.socket-addrinfo-connect.php)
+- [socket_addrinfo_bind()](https://www.php.net/manual/zh/function.socket-addrinfo-bind.php)
+- [socket_addrinfo_explain()](https://www.php.net/manual/zh/function.socket-addrinfo-explain.php)
+
+
+
+### 33）扩展了参数类型
+
+`PHP 7.2` 重写方法和接口实现的参数类型现在可以省略了。不过这仍然是符合 `LSP`，因为现在这种参数类型是逆变的。
+
+```php
+<?php
+
+interface A
+{
+    public function Test(array $input);
+}
+
+class B implements A
+{
+    public function Test($input){} // type omitted for $input
+}
+```
+
+
+
+### 34）允许分组命名空间的尾部逗号
+
+`PHP 7.2` 命名空间可以在 `PHP 7` 中使用尾随逗号进行分组引入。
+
+```php
+<?php
+
+use Foo\Bar\{
+    Foo,
+    Bar,
+    Baz,
+};
+```
+
+
+
+### 35）`PHP 7.2` 新增函数
+
+```
+stream_isatty() - 检查 stream 流是否来自 TTY。
+spl_object_id() - 给当前对象分配一个整型 ID。
+mb_chr() - 与 chr() 类似， mb_chr() 是针对宽字符。
+mb_ord() - 与 ord() 类型，mb_ord() 是针对宽字符。
+mb_scrub() - 暂时不知何用。貌似是判断字符用。
+```
+
+> 更新新增函数：https://www.php.net/manual/zh/migration72.new-functions.php
+
+
+
+### 36）废弃的方法
+
+```
+png2wbmp()
+jpeg2wbmp()
+__autoload()
+create_function()
+```
+
+> 更多：https://www.php.net/manual/zh/migration72.deprecated.php
+
+
+
+
+
+
 
 
 
