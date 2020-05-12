@@ -22,7 +22,7 @@
 	* [3.1 基础配置](0x03-php-config/base.md)
 	* [3.2 Session 配置](0x03-php-config/session.md)
 	* [3.3 Cookie 配置](0x03-php-config/cookie.md)
-	* [3.4 日志配置](0x03-php-config/log.md)
+	* [3.4 错误/日志配置](0x03-php-config/log.md)
 	* [3.5 安全配置](0x03-php-config/safe.md)
 	* [3.6 扩展配置](0x03-php-config/extension.md)
 	* [3.7 上传配置](0x03-php-config/upload.md)
