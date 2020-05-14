@@ -11,6 +11,8 @@
 ```ini
 display_errors = Off
 display_startup_errors = Off
+log_errors = On
+error_logs = /data/logs/php/php72/php_error.log
 ```
 
 
