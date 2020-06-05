@@ -58,6 +58,8 @@
 	* [8.4 优化](0x08-mysql/optimize.md)
 	* [8.5 权限](0x08-mysql/privilege.md)
 	* [8.6 配置](0x08-mysql/config.md)
+	* [8.7 常用函数](0x08-mysql/function.md)
+	* [8.8 数据类型](0x08-mysql/datatype.md)
 * [第 9 章：Nginx](0x09-nginx/README.md)
 	* [9.1 安装](0x09-nginx/install.md)
 	* [9.2 配置](0x09-nginx/config.md)
