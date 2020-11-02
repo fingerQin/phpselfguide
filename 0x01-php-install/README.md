@@ -178,7 +178,56 @@ $ make && make install
 
 
 
-#### 2.7）其他方式安装类库
+#### 2.8）安装最新版本 cmake
+
+很多的 linux 默认有安装 cmake 命令。但是由于太旧无法适应新的版本。导致编译安装 php 的时候会报错。
+
+cmake 官方下载地址：https://cmake.org/download/
+
+请选择与您系统位数一致的版本下载安装。我的 Linux 是 CentOS7 64 位。
+
+所以，我下载的地址为：https://github.com/Kitware/CMake/releases/download/v3.19.0-rc2/cmake-3.19.0-rc2-Linux-x86_64.tar.gz
+
+cmake 安装很简单。不用编译安装。直接解压之后移动到 /usr/local 目录下。再到 /etc/profile 里面加载到 PATH 即可。
+
+```shell
+wget https://github.com/Kitware/CMake/releases/download/v3.19.0-rc2/cmake-3.19.0-rc2-Linux-x86_64.tar.gz
+tar zxvf cmake-3.19.0-rc2-Linux-x86_64.tar.gz
+mv cmake-3.19.0-rc2-Linux-x86_64 /usr/local/cmake
+vim /etc/profile
+```
+
+在 `/etc/profile` 添加如下代码:
+
+```
+export PATH=/usr/local/cmake/bin:$PATH
+```
+
+然后再刷新一下：
+
+```
+source /etc/profile
+```
+
+
+
+#### 2.9）安装 libzip
+
+我们的 PHP 编译的时候会依赖 libzip 扩展。所以，我们要安装这个库。
+
+```
+wget https://libzip.org/download/libzip-1.5.1.tar.gz
+tar -zxvf libzip-1.5.1.tar.gz
+cd libzip-1.5.1
+mkdir build
+cd build
+cmake ..
+make && make install
+```
+
+
+
+#### 2.10）其他方式安装类库
 
 如果你的系统是 CentOS 的话，完全不用上面那么麻烦。直接可以通过 `yum` 来安装。只不过，有些库在 `yum` 源中版本太低，导致我们不得不使用源码安装。如果安装过程中，出现版本太低的情况。大家选择手动编译安装。
 
